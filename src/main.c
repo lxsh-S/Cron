@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
 int main(void) {
 
   char input[1024]; // Initializing the user input variable
@@ -13,14 +16,31 @@ int main(void) {
     // Comapre the user input with 'exit'
     if (strcmp(input, "exit") == 0) {
       break;
+    }
 
-    } else if (input[0] != '\0') { // We run the command and print the input
-                                   // back using "system"
-      int result = system(input);
+    if (input[0] != '\0') {
+      char *args[64];
+      int argc = 0;
 
-      if (result != 0) { // If the command is not found we return a error.
-        printf("%s: not found\n", input);
-        break;
+      char *token = strtok(input, " ");
+
+      while (token != NULL && argc <= 63) {
+        args[argc] = token;
+        argc++;
+        token = strtok(NULL, " ");
+      }
+
+      args[argc] = NULL;
+
+      pid_t pid = fork();
+
+      if (pid == 0) {
+        execvp(args[0], args);
+
+        printf("%s: command not found\n", args[0]);
+        exit(1);
+      } else {
+        wait(NULL);
       }
     }
   }
