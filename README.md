@@ -34,3 +34,7 @@ Uses `GCC` and build `Object files`
 ## WHAT DOESNT WORK??
 
 Pretty much everything doesnt work, working on it :P !
+
+### CURRENTLY WORKING ON??
+
+- I/O redirection !
