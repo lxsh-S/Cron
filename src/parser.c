@@ -40,6 +40,15 @@ int split_redirect(char *input, char **command, char **file) {
     return 0;
   }
 
+  if (*(redirect_pos + 1) == '>') {
+    *redirect_pos = '\0';
+
+    *command = input;
+    *file = redirect_pos + 2;
+
+    return 2;
+  }
+
   // Found redirect
   *redirect_pos = '\0';
 

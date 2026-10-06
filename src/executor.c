@@ -66,11 +66,19 @@ void execute_pipeline(char **left_args, char **right_args) {
 }
 
 // Execute rediret to file
-void execute_redirect(char **args, char *file) {
+void execute_redirect(char **args, char *file, int append) {
   pid_t pid = fork();
 
   if (pid == 0) {
-    int fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    int flags = O_WRONLY | O_CREAT;
+
+    if (append) {
+      flags |= O_APPEND;
+    } else {
+      flags |= O_TRUNC;
+    }
+
+    int fd = open(file, flags, 0644);
 
     // If error
     if (fd == -1) {

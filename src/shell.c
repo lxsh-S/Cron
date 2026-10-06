@@ -41,7 +41,9 @@ void shell_run(void) {
       char *command;
       char *file;
 
-      if (split_redirect(input, &command, &file)) {
+      int redirect_type = split_redirect(input, &command, &file);
+
+      if (redirect_type != 0) {
         char *args[64];
 
         // Remove blank space after '>'
@@ -50,7 +52,7 @@ void shell_run(void) {
         }
 
         parse_command(input, args);
-        execute_redirect(args, file);
+        execute_redirect(args, file, redirect_type == 2);
 
       } else {
         char *args[64];

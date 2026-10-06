@@ -31,7 +31,7 @@ Uses `GCC` and build `Object files`
 ### 2 word commands
 
 - ls | grep .c
-- echo hello cron! > test.txt
+- echo hello cron! > test.txt and can also append now`>>`
 
 ## WHAT DOESNT WORK??
 
