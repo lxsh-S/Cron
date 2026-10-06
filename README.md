@@ -25,10 +25,12 @@ Uses `GCC` and build `Object files`
 - ls
 - cmatrix
 - pipes.sh
+- cat
+- echo
 
 ### 2 word commands
 
-- ls | grep .>
+- ls | grep .c
 - echo hello cron! > test.txt
 
 ## WHAT DOESNT WORK??
