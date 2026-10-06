@@ -35,8 +35,10 @@ void shell_run(void) {
       parse_command(left, left_args);
       parse_command(right, right_args);
 
-      printf("LEFT COMMAND: %s\n", left_args[0]);
-      printf("RIGHT COMMAND: %s\n", right_args[0]);
+      execute_pipeline(left_args, right_args);
+
+      // printf("LEFT COMMAND: %s\n", left_args[0]);
+      // printf("RIGHT COMMAND: %s\n", right_args[0]);
     } else {
       char *args[64];
       parse_command(input, args);

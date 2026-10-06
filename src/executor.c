@@ -18,3 +18,48 @@ void execute_command(char **args) {
 
   waitpid(pid, NULL, 0);
 }
+
+// We execute the pipeline here when '|' ofc
+void execute_pipeline(char **left_args, char **right_args) {
+  int pipefd[2];
+
+  pipe(pipefd);
+
+  pid_t left_pid = fork();
+
+  if (left_pid == 0) {
+    close(pipefd[0]);
+
+    dup2(pipefd[1], STDOUT_FILENO);
+
+    close(pipefd[1]);
+
+    execvp(left_args[0], left_args);
+
+    // We knoW that this will only run if the 'exec' fails
+    perror(left_args[0]);
+    exit(1);
+  }
+
+  pid_t right_pid = fork();
+
+  if (right_pid == 0) {
+    close(pipefd[1]);
+
+    dup2(pipefd[0], STDIN_FILENO);
+
+    close(pipefd[0]);
+
+    execvp(right_args[0], right_args);
+
+    perror(right_args[0]);
+    exit(1);
+  }
+
+  // Cron is the parent of these two childs above (!!!Wow!!!)
+  close(pipefd[0]);
+  close(pipefd[1]);
+
+  waitpid(left_pid, NULL, 0);
+  waitpid(right_pid, NULL, 0);
+}
