@@ -31,6 +31,7 @@ int split_pipe(char *input, char **left, char **right) {
   return 1;
 }
 
+// I/O redirection
 int split_redirect(char *input, char **command, char **file) {
   char *redirect_pos = strchr(input, '>');
 

@@ -37,12 +37,18 @@ void shell_run(void) {
 
       execute_pipeline(left_args, right_args);
 
-      // printf("LEFT COMMAND: %s\n", left_args[0]);
-      // printf("RIGHT COMMAND: %s\n", right_args[0]);
     } else {
-      char *args[64];
-      parse_command(input, args);
-      execute_command(args);
+      char *command;
+      char *file;
+
+      if (split_redirect(input, &command, &file)) {
+        printf("COMMAD: %s\n", command);
+        printf("FILE: %s\n", file);
+      } else {
+        char *args[64];
+        parse_command(input, args);
+        execute_command(args);
+      }
     }
   }
 }
