@@ -8,7 +8,8 @@ OBJ = build/main.o \
 			build/executor.o \
 			build/parser.o 
 
-SRC = src/main.c src/shell.c src/parser.c src/executor.c
+## Wont be suing but let it be ig ;)
+# SRC = src/main.c src/shell.c src/parser.c src/executor.c
 
 $(TARGET): $(OBJ)
 	$(CC) $(OBJ) -o $(TARGET)
@@ -26,4 +27,4 @@ build/executor.o: src/executor.c src/executor.h
 	$(CC) $(CFLAGS) -c src/executor.c -o build/executor.o
 
 clean:
-	rm -rf $(TARGET)
+	rm -rf build/*.o build/cron
