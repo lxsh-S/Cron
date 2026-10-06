@@ -8,7 +8,7 @@ A Small, Simple and Lightweight shell written in C.
 make
 ```
 
-Uses `GCC`
+Uses `GCC` and build `Object files`
 
 ## USAGE
 
