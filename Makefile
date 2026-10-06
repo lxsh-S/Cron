@@ -19,7 +19,7 @@ build/main.o: src/main.c src/shell.h
 build/shell.o: src/shell.c src/shell.h src/parser.h src/executor.h
 	$(CC) $(CFLAGS) -c src/shell.c -o build/shell.o
 
-build/parser.0: src/parser.c src/parser.h
+build/parser.o: src/parser.c src/parser.h
 	$(CC) $(CFLAGS) -c src/parser.c -o build/parser.o
 
 build/executor.o: src/executor.c src/executor.h
