@@ -44,10 +44,5 @@ void shell_run(void) {
       parse_command(input, args);
       execute_command(args);
     }
-
-    char *args[64];
-
-    parse_command(input, args);
-    execute_command(args);
   }
 }
