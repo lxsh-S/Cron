@@ -15,3 +15,18 @@ void parse_command(char *input, char **args) {
 
   args[argc] = NULL;
 }
+
+int split_pipe(char *input, char **left, char **right) {
+  char *pipe_pos = strchr(input, '|');
+
+  if (pipe_pos == NULL) {
+    return 0;
+  }
+
+  *pipe_pos = '\0';
+
+  *left = input;
+  *right = pipe_pos + 1;
+
+  return 1;
+}
