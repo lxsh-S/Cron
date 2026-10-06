@@ -1,5 +1,6 @@
 #include "executor.h"
 
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -62,4 +63,29 @@ void execute_pipeline(char **left_args, char **right_args) {
 
   waitpid(left_pid, NULL, 0);
   waitpid(right_pid, NULL, 0);
+}
+
+// Execute rediret to file
+void execute_redirect(char **args, char *file) {
+  pid_t pid = fork();
+
+  if (pid == 0) {
+    int fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+
+    // If error
+    if (fd == -1) {
+      perror("file");
+      exit(1);
+    }
+
+    dup2(fd, STDOUT_FILENO);
+    close(fd);
+
+    execvp(args[0], args);
+
+    perror(args[0]);
+    exit(1);
+  }
+
+  waitpid(pid, NULL, 0);
 }

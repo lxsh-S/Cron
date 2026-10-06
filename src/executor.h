@@ -3,5 +3,5 @@
 
 void execute_command(char **args);
 void execute_pipeline(char **left_args, char **right_args);
-
+void execute_redirect(char **args, char *file);
 #endif // EXECUTOR_H

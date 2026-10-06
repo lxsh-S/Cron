@@ -42,8 +42,16 @@ void shell_run(void) {
       char *file;
 
       if (split_redirect(input, &command, &file)) {
-        printf("COMMAD: %s\n", command);
-        printf("FILE: %s\n", file);
+        char *args[64];
+
+        // Remove blank space after '>'
+        while (*file == ' ' || *file == '\t') {
+          file++;
+        }
+
+        parse_command(input, args);
+        execute_redirect(args, file);
+
       } else {
         char *args[64];
         parse_command(input, args);
