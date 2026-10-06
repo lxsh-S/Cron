@@ -29,8 +29,14 @@ void shell_run(void) {
     char *right;
 
     if (split_pipe(input, &left, &right)) {
-      printf("LEFT: %s\n", left);
-      printf("RIGHT: %s\n", right);
+      char *left_args[64];
+      char *right_args[64];
+
+      parse_command(left, left_args);
+      parse_command(right, right_args);
+
+      printf("LEFT COMMAND: %s\n", left_args[0]);
+      printf("RIGHT COMMAND: %s\n", right_args[0]);
     } else {
       char *args[64];
       parse_command(input, args);
