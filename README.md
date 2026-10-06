@@ -1,5 +1,8 @@
 # Cron
 
+<img width="852" height="334" alt="2026_10_06_17_50_02_screenshot" src="https://github.com/user-attachments/assets/36978579-5ebe-4bd2-91c4-e62827e0cffe" />
+
+
 A Small, Simple and Lightweight shell written in C.
 
 ## BUILD
