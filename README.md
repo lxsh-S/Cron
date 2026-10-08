@@ -32,6 +32,7 @@ Uses `GCC` and build `Object files`
 
 - ls | grep .c
 - echo hello cron! > test.txt and can also append now`>>`
+- cat < somefile.txt
 
 ## WHAT DOESNT WORK??
 
@@ -43,8 +44,8 @@ Currently cron only supports:
 - 2-command Pipelines
 - '>' output redirection
 - '>>' output redirection
-
-A bunch of shell features are still being impemented :P
+- '<' to read files using cat/Input
+  A bunch of shell features are still being impemented :P
 
 ### CURRENTLY WORKING ON??
 
