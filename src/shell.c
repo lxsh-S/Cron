@@ -9,7 +9,7 @@ void shell_run(void) {
   char input[1024];
 
   while (1) {
-    printf(">>> ");
+    printf("λ ");
 
     if (fgets(input, sizeof(input), stdin) == NULL) {
       break;
@@ -42,8 +42,14 @@ void shell_run(void) {
       char *file;
 
       if (split_input_redirect(input, &command, &file)) {
-        printf("COMMAND: %s\n", command);
-        printf("FILE: %s\n", file);
+        char *args[64];
+
+        while (*file == ' ' || *file == '\t') {
+          file++;
+        }
+
+        parse_command(command, args);
+        execute_input_redirect(args, file);
       }
 
       int redirect_type = split_redirect(input, &command, &file);

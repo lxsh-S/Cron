@@ -97,3 +97,24 @@ void execute_redirect(char **args, char *file, int append) {
 
   waitpid(pid, NULL, 0);
 }
+
+void execute_input_redirect(char **args, char *file) {
+  pid_t pid = fork();
+
+  if (pid == 0) {
+    int fd = open(file, O_RDONLY);
+
+    if (fd == -1) {
+      perror(file);
+      exit(1);
+    }
+
+    dup2(fd, STDIN_FILENO);
+    close(fd);
+
+    execvp(args[0], args);
+
+    perror(args[0]);
+    exit(1);
+  }
+}
