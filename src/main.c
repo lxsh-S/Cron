@@ -5,6 +5,7 @@ int main(void) {
 
   printf("> ");
   fgets(input, sizeof(input), stdin);
+  printf("INPUT: [%s]\n", input);
 
   struct token tokens[64];
 

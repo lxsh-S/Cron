@@ -1,46 +1,43 @@
 #include "tokenizer.h"
 #include <string.h>
+#include <threads.h>
 
 int tokenizer(char *input, struct token *tokens) {
   int count = 0;
-  char *start = input;
+  char *p = input;
 
-  while (*start != '\0') {
-    // we skip spaces
-    if (*start == ' ') {
-      start++;
+  while (*p != '\0') {
+
+    // Ofc we skip spaces
+    if (*p == ' ') {
+      p++;
       continue;
     }
 
     // Pipe
-    if (*start == '|') {
+    if (*p == '|') {
       tokens[count].type = TOKEN_PIPE;
-      tokens[count].value = start;
+      strcpy(tokens[count].value, "|");
 
-      start++;
+      p++;
       count++;
       continue;
     }
 
     // Word
-    char *work_start = start;
+    char *start = p;
 
-    while (*start != '\0' && *start != ' ' && *start != '|') {
-      start++;
+    while (*p != '\0' && *p != ' ' && *p != '|') {
+      p++;
     }
 
-    if (*start == '|') {
-      *start = '\0';
-      start++;
-    } else if (*start == ' ') {
-      *start = '\0';
-      start++;
-    }
+    int length = p - start;
+
+    strncpy(tokens[count].value, start, length);
+    tokens[count].value[length] = '\0';
 
     tokens[count].type = TOKEN_WORD;
-    tokens[count].value = work_start;
-
     count++;
   }
-  return count; // returning the number of tokens we created
+  return count;
 }

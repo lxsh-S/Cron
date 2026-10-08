@@ -11,7 +11,7 @@ enum token_type {
 
 struct token {
   enum token_type type;
-  char *value;
+  char value[64];
 };
 
 int tokenizer(char *input, struct token *tokens);
