@@ -50,25 +50,26 @@ void shell_run(void) {
 
         parse_command(command, args);
         execute_input_redirect(args, file);
-      }
-
-      int redirect_type = split_redirect(input, &command, &file);
-
-      if (redirect_type != 0) {
-        char *args[64];
-
-        // Remove blank space after '>'
-        while (*file == ' ' || *file == '\t') {
-          file++;
-        }
-
-        parse_command(input, args);
-        execute_redirect(args, file, redirect_type == 2);
-
       } else {
-        char *args[64];
-        parse_command(input, args);
-        execute_command(args);
+
+        int redirect_type = split_redirect(input, &command, &file);
+
+        if (redirect_type != 0) {
+          char *args[64];
+
+          // Remove blank space after '>'
+          while (*file == ' ' || *file == '\t') {
+            file++;
+          }
+
+          parse_command(command, args);
+          execute_redirect(args, file, redirect_type == 2);
+
+        } else {
+          char *args[64];
+          parse_command(input, args);
+          execute_command(args);
+        }
       }
     }
   }

@@ -117,4 +117,6 @@ void execute_input_redirect(char **args, char *file) {
     perror(args[0]);
     exit(1);
   }
+
+  waitpid(pid, NULL, 0);
 }
