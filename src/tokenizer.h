@@ -1,4 +1,4 @@
-#ifdef TOKENIZER_H
+#ifndef TOKENIZER_H
 #define TOKENIZER_H
 
 enum token_type {
@@ -14,6 +14,6 @@ struct token {
   char *value;
 };
 
-int tokenizer(char 8input, struct token *tokens);
+int tokenizer(char *input, struct token *tokens);
 
 #endif // TOKENIZER_H
