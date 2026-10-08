@@ -28,14 +28,23 @@ Uses `GCC` and build `Object files`
 - cat
 - echo
 
-### 2 word commands
+### Pipelines
 
 - ls | grep .c
 - echo hello cron! > test.txt and can also append now`>>`
 
 ## WHAT DOESNT WORK??
 
-Pretty much everything doesnt work, working on it :P !
+A LOT :(
+
+Currently cron only supports:
+
+- basic commands
+- 2-command Pipelines
+- '>' output redirection
+- '>>' output redirection
+
+A bunch of shell features are still being impemented :P
 
 ### CURRENTLY WORKING ON??
 
