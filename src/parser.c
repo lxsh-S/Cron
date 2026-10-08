@@ -57,3 +57,19 @@ int split_redirect(char *input, char **command, char **file) {
 
   return 1;
 }
+
+// I/O redirection '<'
+int split_input_redirect(char *input, char **command, char **file) {
+  char *redirect_pos = strchr(input, '<');
+
+  if (redirect_pos == NULL) {
+    return 0;
+  }
+
+  *redirect_pos = '\0';
+
+  *command = input;
+  *file = redirect_pos + 1;
+
+  return 1;
+}

@@ -7,4 +7,6 @@ int split_pipe(char *input, char **left, char **right);
 
 int split_redirect(char *input, char **command, char **file);
 
+int split_input_redirect(char *input, char **command, char **file);
+
 #endif // PARSER_H

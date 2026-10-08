@@ -41,6 +41,11 @@ void shell_run(void) {
       char *command;
       char *file;
 
+      if (split_input_redirect(input, &command, &file)) {
+        printf("COMMAND: %s\n", command);
+        printf("FILE: %s\n", file);
+      }
+
       int redirect_type = split_redirect(input, &command, &file);
 
       if (redirect_type != 0) {

@@ -48,4 +48,4 @@ A bunch of shell features are still being impemented :P
 
 ### CURRENTLY WORKING ON??
 
-- I/O redirection (appending '>>') -done!
+- I/O redirection (appending '<')
