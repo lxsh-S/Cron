@@ -56,6 +56,8 @@ void shell_run(void) {
     if (has_operator) {
       printf("Cron currently doesnt support operators because of the new "
              "executor!\n");
+      continue; // we'll go back to the loop start because we hit an operator
+                // wooh scary !!!
     }
 
     char *args[64];
