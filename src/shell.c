@@ -4,6 +4,7 @@
 #include "executor.h"
 #include "parser.h"
 #include "shell.h"
+#include "tokenizer.h"
 
 void shell_run(void) {
   char input[1024];
@@ -25,52 +26,58 @@ void shell_run(void) {
       continue;
     }
 
-    char *left;
-    char *right;
+    struct token tokens[64];
 
-    if (split_pipe(input, &left, &right)) {
-      char *left_args[64];
-      char *right_args[64];
+    int count = tokenizer(input, tokens);
 
-      parse_command(left, left_args);
-      parse_command(right, right_args);
-
-      execute_pipeline(left_args, right_args);
-
-    } else {
-      char *command;
-      char *file;
-
-      if (split_input_redirect(input, &command, &file)) {
-        char *args[64];
-
-        while (*file == ' ' || *file == '\t') {
-          file++;
-        }
-
-        parse_command(command, args);
-        execute_input_redirect(args, file);
-      } else {
-
-        int redirect_type = split_redirect(input, &command, &file);
-
-        if (redirect_type != 0) {
-          char *args[64];
-
-          // Remove blank space after '>'
-          while (*file == ' ' || *file == '\t') {
-            file++;
-          }
-
-          parse_command(command, args);
-          execute_redirect(args, file, redirect_type == 2);
-
-        } else {
-          char *args[64];
-          parse_command(input, args);
-          execute_command(args);
-        }
-      }
+    for (int i = 0; i < count; i++) {
+      printf("TYPE: %d | VALUE: %s\n", tokens[i].type, tokens[i].value);
     }
+
+    // char *left;
+    // char *right;
+    //
+    // if (split_pipe(input, &left, &right)) {
+    //   char *left_args[64];
+    //   char *right_args[64];
+    //
+    //   parse_command(left, left_args);
+    //   parse_command(right, right_args);
+    //
+    //   execute_pipeline(left_args, right_args);
+    //
+    // } else {
+    //   char *command;
+    //   char *file;
+    //
+    //   if (split_input_redirect(input, &command, &file)) {
+    //     char *args[64];
+    //
+    //     while (*file == ' ' || *file == '\t') {
+    //       file++;
+    //     }
+    //
+    //     parse_command(command, args);
+    //     execute_input_redirect(args, file);
+    //   } else {
+    //
+    //     int redirect_type = split_redirect(input, &command, &file);
+    //
+    //     if (redirect_type != 0) {
+    //       char *args[64];
+    //
+    //       // Remove blank space after '>'
+    //       while (*file == ' ' || *file == '\t') {
+    //         file++;
+    //       }
+    //
+    //       parse_command(command, args);
+    //       execute_redirect(args, file, redirect_type == 2);
+    //
+    //     } else {
+    //       char *args[64];
+    //       parse_command(input, args);
+    //       execute_command(args);
+    //     }
   }
 }

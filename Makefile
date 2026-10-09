@@ -6,7 +6,8 @@ TARGET = build/cron
 OBJ = build/main.o \
 			build/shell.o \
 			build/executor.o \
-			build/parser.o 
+			build/parser.o \
+			build/tokenizer.o
 
 ## Wont be suing but let it be ig ;)
 # SRC = src/main.c src/shell.c src/parser.c src/executor.c
@@ -25,6 +26,9 @@ build/parser.o: src/parser.c src/parser.h
 
 build/executor.o: src/executor.c src/executor.h
 	$(CC) $(CFLAGS) -c src/executor.c -o build/executor.o
+
+build/tokenizer.o: src/tokenizer.c src/tokenizer.h
+	$(CC) $(CFLAGS) -c src/tokenizer.c -o build/tokenizer.o
 
 clean:
 	rm -rf build/*.o build/cron
