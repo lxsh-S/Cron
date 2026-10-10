@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "executor.h"
+#include "parser.h"
 #include "shell.h"
 #include "tokenizer.h"
 
@@ -44,20 +45,26 @@ void shell_run(void) {
 
     int count = tokenizer(input, tokens);
 
-    int has_operator = 0;
+    int has_pipe = 0;
 
     for (int i = 0; i < count; i++) {
-      if (tokens[i].type != TOKEN_WORD) {
-        has_operator = 1; // 1 - true for us
+      if (tokens[i].type == TOKEN_PIPE) {
+        has_pipe = 1;
         break;
       }
     }
 
-    if (has_operator) {
-      printf("Cron currently doesnt support operators because of the new "
-             "executor!\n");
-      continue; // we'll go back to the loop start because we hit an operator
-                // wooh scary !!!
+    if (has_pipe) {
+      char *left_args[64];
+      char *right_args[64];
+
+      if (split_tokens_pipe(tokens, count, left_args, right_args)) {
+        execute_pipeline(left_args, right_args);
+      } else {
+        printf("Invalid pipe commad!");
+      }
+
+      continue; // we dont execute it as normal command now ofc
     }
 
     char *args[64];
