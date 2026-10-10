@@ -6,6 +6,57 @@
 #include "shell.h"
 #include "tokenizer.h"
 
+static int handel_output_redirect(struct token *tokens, int count) {
+  int redirect_index = -1;
+
+  for (int i = 0; i < count; i++) {
+    printf("TOKEN: %d type=%d value=%s\n", i, tokens[i].type, tokens[i].value);
+    if (tokens[i].type == TOKEN_REDIR_OUT ||
+        tokens[i].type == TOKEN_REDIR_APPEND) {
+      if (redirect_index != -1) {
+        return 0;
+      }
+
+      redirect_index = 1;
+    }
+  }
+
+  if (redirect_index == -1) {
+    return 0;
+  }
+
+  // for debugging
+  printf("DEBUG: count=%d, redirect_index=%d\n", count, redirect_index);
+
+  if (redirect_index == 0 || redirect_index + 2 != count ||
+      tokens[redirect_index + 1].type != TOKEN_WORD) {
+    printf("Invalid putput redirection!\n");
+    return 1;
+  }
+
+  char *args[64];
+  int argc = 0;
+
+  for (int i = 0; i < redirect_index; i++) {
+    if (tokens[i].type != TOKEN_WORD) {
+      printf("Invalid output redirection");
+      return 1;
+    }
+
+    args[argc++] = tokens[i].value;
+  }
+
+  args[argc] = NULL;
+
+  int append = tokens[redirect_index].type == TOKEN_REDIR_APPEND;
+  printf("DEBUG: command = %s\n", args[0]);
+  printf("DEBUG: filename = %s\n", tokens[redirect_index + 1].value);
+  printf("DEBUG: append = %d\n", append);
+  execute_redirect(args, tokens[redirect_index + 1].value, append);
+
+  return 1;
+}
+
 static void tokens_to_args(struct token *tokens, int count, char **args) {
   int argc = 0;
 
@@ -64,7 +115,14 @@ void shell_run(void) {
         printf("Invalid pipe commad!\n");
       }
 
-      continue; // we dont execute it as normal command now ofc
+      continue;
+      // output redirection before the way we handel normal commandsntinue; //
+      // we dont execute it as normal command now ofc
+    }
+
+    // output redirection before the way we handel normal commands
+    if (handel_output_redirect(tokens, count)) {
+      continue;
     }
 
     char *args[64];
