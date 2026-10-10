@@ -29,6 +29,7 @@ Uses `GCC` and build `Object files`
 - pipes.sh
 - cat
 - echo
+- cd
 
 ### Pipelines
 
@@ -51,4 +52,4 @@ Currently cron only supports:
 
 ### CURRENTLY WORKING ON??
 
-- `cd`
+- a help command
