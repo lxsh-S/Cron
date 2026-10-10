@@ -61,7 +61,7 @@ void shell_run(void) {
       if (split_tokens_pipe(tokens, count, left_args, right_args)) {
         execute_pipeline(left_args, right_args);
       } else {
-        printf("Invalid pipe commad!");
+        printf("Invalid pipe commad!\n");
       }
 
       continue; // we dont execute it as normal command now ofc

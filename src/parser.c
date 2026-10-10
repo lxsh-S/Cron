@@ -85,6 +85,11 @@ int split_tokens_pipe(struct token *tokens, int count, char **left_args,
 
   for (int i = 0; i < count; i++) {
     if (tokens[i].type == TOKEN_PIPE) {
+      if (found_pipe == 1) {
+        continue;
+        return 0;
+      }
+
       found_pipe = 1;
       continue;
     }
