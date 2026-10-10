@@ -1,5 +1,6 @@
 #include <fcntl.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "executor.h"
@@ -178,9 +179,13 @@ void shell_run(void) {
     // execute the command
     if (args[0] != NULL) {
       if (strcmp(args[0], "cd") == 0) {
-        if (args[1] == NULL) {
-          printf("cd: missing dir!\n");
-        } else if (chdir(args[1]) == -1) {
+        char *directory = args[1];
+
+        if (directory == NULL) {
+          directory = getenv("HOME");
+        }
+
+        if (directory == NULL || chdir(directory) == -1) {
           perror("cd");
         }
       } else {
