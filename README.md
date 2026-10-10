@@ -30,6 +30,7 @@ Uses `GCC` and build `Object files`
 - cat
 - echo
 - cd
+- help
 
 ### Pipelines
 
@@ -52,4 +53,4 @@ Currently cron only supports:
 
 ### CURRENTLY WORKING ON??
 
-- a help command
+- refactor shell.c
