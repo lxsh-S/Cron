@@ -1,3 +1,4 @@
+#include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -6,11 +7,54 @@
 #include "shell.h"
 #include "tokenizer.h"
 
+// "<"
+static int handel_input_redirect(struct token *tokens, int count) {
+  int redirect_index = -1;
+
+  for (int i = 0; i < count; i++) {
+    if (tokens[i].type == TOKEN_REDIR_IN) {
+      if (redirect_index != -1) {
+        printf("Invalid input redirection!\n");
+        return 1;
+      }
+
+      redirect_index = i;
+    }
+  }
+
+  if (redirect_index == -1) {
+    return 0;
+  }
+
+  if (redirect_index == 0 || redirect_index + 2 != count ||
+      tokens[redirect_index + 1].type != TOKEN_WORD) {
+    printf("Invalid input redirection!\n");
+    return 1;
+  }
+
+  char *args[64];
+  int argc = 0;
+
+  for (int i = 0; i < redirect_index; i++) {
+    if (tokens[i].type != TOKEN_WORD) {
+      printf("Invalid input redirection!\n");
+      return 1;
+    }
+
+    args[argc++] = tokens[i].value;
+  }
+
+  args[argc] = NULL;
+
+  execute_input_redirect(args, tokens[redirect_index + 1].value);
+  return 1;
+}
+
+// '>'
 static int handel_output_redirect(struct token *tokens, int count) {
   int redirect_index = -1;
 
   for (int i = 0; i < count; i++) {
-    printf("TOKEN: %d type=%d value=%s\n", i, tokens[i].type, tokens[i].value);
     if (tokens[i].type == TOKEN_REDIR_OUT ||
         tokens[i].type == TOKEN_REDIR_APPEND) {
       if (redirect_index != -1) {
@@ -24,8 +68,6 @@ static int handel_output_redirect(struct token *tokens, int count) {
   if (redirect_index == -1) {
     return 0;
   }
-
-  // for debugging
 
   if (redirect_index == 0 || redirect_index + 2 != count ||
       tokens[redirect_index + 1].type != TOKEN_WORD) {
@@ -53,6 +95,7 @@ static int handel_output_redirect(struct token *tokens, int count) {
   return 1;
 }
 
+// tokens -> args
 static void tokens_to_args(struct token *tokens, int count, char **args) {
   int argc = 0;
 
@@ -68,6 +111,7 @@ static void tokens_to_args(struct token *tokens, int count, char **args) {
   args[argc] = NULL;
 }
 
+// Run the shell
 void shell_run(void) {
   char input[1024];
 
@@ -118,6 +162,11 @@ void shell_run(void) {
 
     // output redirection before the way we handel normal commands
     if (handel_output_redirect(tokens, count)) {
+      continue;
+    }
+
+    // input redirection
+    if (handel_input_redirect(tokens, count)) {
       continue;
     }
 
