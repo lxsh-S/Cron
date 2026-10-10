@@ -1,4 +1,5 @@
 #include "parser.h"
+#include "tokenizer.h"
 #include <string.h>
 
 void parse_command(char *input, char **args) {
@@ -71,6 +72,43 @@ int split_input_redirect(char *input, char **command, char **file) {
 
   *command = input;
   *file = redirect_pos + 1;
+
+  return 1;
+}
+
+// tokenizer
+int split_tokens_pipe(struct token *tokens, int count, char **left_args,
+                      char **right_args) {
+  int left_count = 0;
+  int right_count = 0;
+  int found_pipe = 0;
+
+  for (int i = 0; i < count; i++) {
+    if (tokens[i].type == TOKEN_PIPE) {
+      found_pipe = 1;
+      continue;
+    }
+
+    if (tokens[i].type != TOKEN_WORD) {
+      return 0;
+    }
+
+    if (found_pipe == 0) {
+      left_args[left_count] = tokens[i].value;
+      left_count++;
+    } else {
+      right_args[right_count] = tokens[i].value;
+      right_count++;
+    }
+  }
+
+  // Add null at the end
+  left_args[left_count] = NULL;
+  right_args[right_count] = NULL;
+
+  if (found_pipe == 0 || left_count == 0 || right_count == 0) {
+    return 0;
+  }
 
   return 1;
 }

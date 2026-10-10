@@ -13,13 +13,14 @@ void execute_command(char **args) {
   if (pid == 0) {
     execvp(args[0], args);
 
-    perror(args[0]);
+    perror(args[0]); // Idk why it always prints file error
     exit(1);
   }
 
   waitpid(pid, NULL, 0);
 }
 
+// CURRENTLY UNSED
 // We execute the pipeline here when '|' ofc
 void execute_pipeline(char **left_args, char **right_args) {
   int pipefd[2];
