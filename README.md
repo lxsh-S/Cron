@@ -3,7 +3,9 @@
 <img width="852" height="334" alt="2026_10_06_17_50_02_screenshot" src="https://github.com/user-attachments/assets/36978579-5ebe-4bd2-91c4-e62827e0cffe" />
 
 A Small, Simple and Lightweight shell written in C.
-> Currently working on the tokenizer and the shell is in unusable state!
+
+> Currently working on the tokenizer and adding new features, the shell lacks a lot of features!
+
 ## BUILD
 
 ```
@@ -49,4 +51,4 @@ Currently cron only supports:
 
 ### CURRENTLY WORKING ON??
 
-- A proper tokenizer for complex commands!
+- `cd`

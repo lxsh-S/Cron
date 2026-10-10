@@ -6,9 +6,10 @@
 #include "parser.h"
 #include "shell.h"
 #include "tokenizer.h"
-
+#include "unistd.h"
 // "<"
 static int handel_input_redirect(struct token *tokens, int count) {
+  // means we have not found it yet
   int redirect_index = -1;
 
   for (int i = 0; i < count; i++) {
@@ -17,7 +18,6 @@ static int handel_input_redirect(struct token *tokens, int count) {
         printf("Invalid input redirection!\n");
         return 1;
       }
-
       redirect_index = i;
     }
   }
@@ -89,7 +89,8 @@ static int handel_output_redirect(struct token *tokens, int count) {
 
   args[argc] = NULL;
 
-  int append = tokens[redirect_index].type == TOKEN_REDIR_APPEND;
+  int append =
+      tokens[redirect_index].type == TOKEN_REDIR_APPEND; // 0 -> '>', 1 -> '>>'
   execute_redirect(args, tokens[redirect_index + 1].value, append);
 
   return 1;
@@ -176,7 +177,15 @@ void shell_run(void) {
 
     // execute the command
     if (args[0] != NULL) {
-      execute_command(args);
+      if (strcmp(args[0], "cd") == 0) {
+        if (args[1] == NULL) {
+          printf("cd: missing dir!\n");
+        } else if (chdir(args[1]) == -1) {
+          perror("cd");
+        }
+      } else {
+        execute_command(args);
+      }
     }
   }
 }
