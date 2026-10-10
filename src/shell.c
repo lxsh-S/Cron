@@ -17,7 +17,7 @@ static int handel_output_redirect(struct token *tokens, int count) {
         return 0;
       }
 
-      redirect_index = 1;
+      redirect_index = i;
     }
   }
 
