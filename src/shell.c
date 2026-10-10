@@ -26,7 +26,6 @@ static int handel_output_redirect(struct token *tokens, int count) {
   }
 
   // for debugging
-  printf("DEBUG: count=%d, redirect_index=%d\n", count, redirect_index);
 
   if (redirect_index == 0 || redirect_index + 2 != count ||
       tokens[redirect_index + 1].type != TOKEN_WORD) {
@@ -49,9 +48,6 @@ static int handel_output_redirect(struct token *tokens, int count) {
   args[argc] = NULL;
 
   int append = tokens[redirect_index].type == TOKEN_REDIR_APPEND;
-  printf("DEBUG: command = %s\n", args[0]);
-  printf("DEBUG: filename = %s\n", tokens[redirect_index + 1].value);
-  printf("DEBUG: append = %d\n", append);
   execute_redirect(args, tokens[redirect_index + 1].value, append);
 
   return 1;
