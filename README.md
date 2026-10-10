@@ -49,7 +49,8 @@ Currently cron only supports:
 - '>' output redirection
 - '>>' output redirection
 - '<' to read files using cat/Input
-  A bunch of shell features are still being impemented :P
+
+A bunch of shell features are still being impemented :P
 
 ### CURRENTLY WORKING ON??
 
