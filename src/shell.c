@@ -179,7 +179,7 @@ void shell_run(void) {
     tokens_to_args(tokens, count, args);
 
     // execute the command
-    if (args[0] != NULL) {
+    if (args[0] != NULL && args[0][0] != '\0') {
       // NOT if 0 and tehn we execute_command normally
       if (!handel_builtin(args)) {
         execute_command(args);

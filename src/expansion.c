@@ -1,6 +1,7 @@
 #include "expansion.h"
 #include <stdlib.h>
 
+// read envs
 char *expand_variable(char *word) {
   if (word[0] != '$') {
     return word;
