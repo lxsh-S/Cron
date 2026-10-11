@@ -8,8 +8,8 @@ OBJ = build/main.o \
 			build/executor.o \
 			build/parser.o \
 			build/tokenizer.o \
-			build/builtins.o
-
+			build/builtins.o \
+			build/expansion.o 
 ## Wont be suing but let it be ig ;)
 # SRC = src/main.c src/shell.c src/parser.c src/executor.c
 
@@ -33,6 +33,9 @@ build/tokenizer.o: src/tokenizer.c src/tokenizer.h
 
 build/builtins.o: src/builtins.c src/builtins.h
 	$(CC) $(CFLAGS) -c src/builtins.c -o build/builtins.o
+
+build/expansion.o: src/expansion.c src/expansion.h
+	$(CC) $(CFLAGS) -c src/expansion.c -o build/expansion.o
 
 clean:
 	rm -rf build/*.o build/cron
