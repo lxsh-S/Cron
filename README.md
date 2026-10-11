@@ -1,6 +1,6 @@
 # Cron
+<img width="730" height="402" alt="2026_10_10_21_26_42_screenshot" src="https://github.com/user-attachments/assets/cbcca6f3-b0c7-4c5f-a163-0b8aaf3f764f" />
 
-<img width="852" height="334" alt="2026_10_06_17_50_02_screenshot" src="https://github.com/user-attachments/assets/36978579-5ebe-4bd2-91c4-e62827e0cffe" />
 
 A Small, Simple and Lightweight shell written in C.
 
