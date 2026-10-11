@@ -54,4 +54,4 @@ A bunch of shell features are still being impemented :P
 
 ### CURRENTLY WORKING ON??
 
-- refactor shell.c
+- refactor shell.c and reading environment variables

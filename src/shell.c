@@ -179,6 +179,7 @@ void shell_run(void) {
 
     // execute the command
     if (args[0] != NULL) {
+      // NOT if 0 and tehn we execute_command normally
       if (!handel_builtin(args)) {
         execute_command(args);
       }
