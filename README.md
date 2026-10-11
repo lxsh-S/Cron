@@ -25,8 +25,8 @@ Uses `GCC` and build `Object files`
 ### Basic commands
 
 - ls
-- cmatrix
-- pipes.sh
+- cmatrix,
+- pipes.sh and more commands like this
 - cat
 - echo
 - cd
@@ -37,8 +37,9 @@ Uses `GCC` and build `Object files`
 - ls | grep .c
 - echo hello cron! > test.txt and can also append now`>>`
 - cat < somefile.txt
+- read/print environment variables `echo $HOME`
 
-## WHAT DOESNT WORK??
+## WHAT DOESN'T WORK??
 
 A LOT :(
 
@@ -54,4 +55,4 @@ A bunch of shell features are still being impemented :P
 
 ### CURRENTLY WORKING ON??
 
-- refactor shell.c and reading environment variables
+- Make git commands work
