@@ -5,6 +5,7 @@
 
 #include "builtins.h"
 #include "executor.h"
+#include "expansion.h"
 #include "parser.h"
 #include "shell.h"
 #include "tokenizer.h"
@@ -107,7 +108,7 @@ static void tokens_to_args(struct token *tokens, int count, char **args) {
       continue;
     }
 
-    args[argc] = tokens[i].value;
+    args[argc] = expand_variable(tokens[i].value);
     argc++;
   }
 
