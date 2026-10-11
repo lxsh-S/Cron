@@ -24,15 +24,15 @@ Currently `Cron's` parser tokenizes the user input into the following `token typ
 
 And then executes the command
 
-## Execute Commands
+### Execute Commands
 
 The shell check is the command is built or not. If it isn't the shell uses child processes
 
-### Builtin Commands
+- Builtin Commands
 
 Internal commands like (`cd`, `exit`) run in the shell process instead of spawning a child process for the obvious reasons
 
-### External Commands
+- External Commands
 
 Commands like I/O redirection require child processes to run, so the shells forks a child and the child calls `execvp()` to execute the commands while `Cron` calls `waitpid()` to wait for the command execution to be complete
 
