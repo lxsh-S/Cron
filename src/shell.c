@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "builtins.h"
 #include "executor.h"
 #include "parser.h"
 #include "shell.h"
@@ -178,24 +179,7 @@ void shell_run(void) {
 
     // execute the command
     if (args[0] != NULL) {
-      if (strcmp(args[0], "cd") == 0) {
-        char *directory = args[1];
-
-        if (directory == NULL) {
-          directory = getenv("HOME");
-        }
-
-        if (directory == NULL || chdir(directory) == -1) {
-          perror("cd");
-        }
-      } else if (strcmp(args[0], "help") == 0) {
-        printf("Cron Shell!!!! - Built in commands:\n");
-        printf(" cd [directory] -- Change the working directory\n");
-        printf("hlep            -- Show this help message..\n");
-        printf("exit            -- Exit Cron\n");
-        printf("------------------------------------------------\n");
-        printf("Pipes: |  Input: <  Output: >   Append: >>\n");
-      } else {
+      if (!handel_builtin(args)) {
         execute_command(args);
       }
     }
