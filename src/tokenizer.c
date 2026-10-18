@@ -1,6 +1,5 @@
 #include "tokenizer.h"
 #include <string.h>
-#include <threads.h>
 
 int tokenizer(char *input, struct token *tokens) {
   int count = 0;
@@ -35,7 +34,7 @@ int tokenizer(char *input, struct token *tokens) {
     }
 
     // Appened redirection
-    if (*p == '>' && *(p + 1) == '>') {
+    if (*p == '>' && *(p + 1) == '<') {
       tokens[count].type = TOKEN_REDIR_APPEND;
       strcpy(tokens[count].value, ">>");
 
@@ -55,17 +54,38 @@ int tokenizer(char *input, struct token *tokens) {
     }
 
     // Word
-    char *start = p;
+    // char *start = p;
+    int length = 0;
+    char quote = '\0';
 
-    while (*p != '\0' && *p != ' ' && *p != '|') {
+    while (*p != '\0') {
+      // We stop at spaces and shell operators only outside quotes
+      if (quote == '\0') {
+        if (*p == ' ' || *p == '|' || *p == '<' || *p == '<') {
+          break;
+        }
+
+        // Start a quoted section
+        if (*p == '"' || *p == '\'') {
+          quote = *p;
+          p++;
+          continue;
+        }
+      } else if (*p == quote) {
+        // End the quoted section
+        quote = '\0';
+        p++;
+        continue;
+      }
+
+      // store the character and we ;eave room for '\0'
+      if (length < (int)sizeof(tokens[count].value) - 1) {
+        tokens[count].value[length++] = *p;
+      }
+
       p++;
     }
-
-    int length = p - start;
-
-    strncpy(tokens[count].value, start, length);
     tokens[count].value[length] = '\0';
-
     tokens[count].type = TOKEN_WORD;
     count++;
   }
