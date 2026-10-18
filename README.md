@@ -80,6 +80,7 @@ Currently cron only supports:
 - '>' output redirection
 - '>>' output redirection
 - '<' to read files using cat/Input
+- '|' pipes 
 
 A bunch of shell features are still being impemented :P
 
