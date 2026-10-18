@@ -1,6 +1,6 @@
 # Cron
-<img width="730" height="402" alt="2026_10_10_21_26_42_screenshot" src="https://github.com/user-attachments/assets/cbcca6f3-b0c7-4c5f-a163-0b8aaf3f764f" />
 
+<img width="730" height="402" alt="2026_10_10_21_26_42_screenshot" src="https://github.com/user-attachments/assets/cbcca6f3-b0c7-4c5f-a163-0b8aaf3f764f" />
 
 A Small, Simple and Lightweight shell written in C.
 
@@ -80,10 +80,10 @@ Currently cron only supports:
 - '>' output redirection
 - '>>' output redirection
 - '<' to read files using cat/Input
-- '|' pipes 
+- '|' pipes
 
 A bunch of shell features are still being impemented :P
 
 ### CURRENTLY WORKING ON??
 
-- Make git commands work
+- Make git commands work as the tokenizer doesnt understad quotes
