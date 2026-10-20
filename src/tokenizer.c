@@ -1,4 +1,5 @@
 #include "tokenizer.h"
+#include <stdio.h>
 #include <string.h>
 
 int tokenizer(char *input, struct token *tokens) {
@@ -74,10 +75,11 @@ int tokenizer(char *input, struct token *tokens) {
       } else {
         // Les handle escape characters in quotes
         if (quote == '"' && *p == '\\' && (*p + 1) != '\0') {
-          p++;
+          p++; // we move past back slash
 
           if (length < (int)sizeof(tokens[count].value) - 1) {
-            tokens[count].value[length++] = *p;
+            tokens[count].value[length++] =
+                *p; // copy the next character adter backslah for us its '"'
           }
 
           p++;
@@ -99,6 +101,12 @@ int tokenizer(char *input, struct token *tokens) {
 
       p++;
     }
+    if (quote != '\0') {
+      fprintf(stderr, "Corn: unmatched quote\n");
+      return -1; // becuase the lest we return in 0 we can use -1 as a way of
+                 // showing that the tokenizer failed!
+    }
+
     tokens[count].value[length] = '\0';
     tokens[count].type = TOKEN_WORD;
     count++;

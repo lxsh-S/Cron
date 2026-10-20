@@ -140,6 +140,10 @@ void shell_run(void) {
 
     int count = tokenizer(input, tokens);
 
+    if (count < 0) {
+      continue; // we stop executing a return to prompting
+    }
+
     int has_pipe = 0;
 
     for (int i = 0; i < count; i++) {

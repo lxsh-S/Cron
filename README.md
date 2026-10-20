@@ -87,4 +87,4 @@ A bunch of shell features are still being impemented :P
 
 ### CURRENTLY WORKING ON??
 
-Fix edge cases like `echo "he said \"hello\""`
+Fix more edge cases that come with quotes
