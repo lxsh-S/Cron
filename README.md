@@ -85,5 +85,3 @@ Currently cron only supports:
 A bunch of shell features are still being impemented :P
 
 ### CURRENTLY WORKING ON??
-
-- Make git commands work as the tokenizer doesnt understand quotes
