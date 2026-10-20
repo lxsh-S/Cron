@@ -43,3 +43,8 @@ char *slash = strchr(word, '/');
 ```
 
 We currently first check for a slash in the input then we seperate the value and the variable then we expand the variable, after this we add it up and it becomes `/home/lxsh/test.txt` which will be a valid input for the cat command!
+
+### Major C concepts I learnt today
+
+- memcpy(), We use this to copy a specific amount of bytes from one memory location to other one, but this doesnt put a null terminator at the end so have to manually add that which I did
+- malloc(), We allocate memory ourself, i didnt knew the the size of the resulting string before hand and as we only use 64 bytes for most part but because ill be changing that this became useful for me. Also we need to free() this after using as I saw in the video
