@@ -82,9 +82,15 @@ Currently cron only supports:
 - '<' to read files using cat/Input
 - '|' pipes
 - Git commands [quotes support]
+- use environment variables with pipes and I/O redirections
 
 A bunch of shell features are still being impemented :P
 
 ### CURRENTLY WORKING ON??
 
-environment variables to work with commands pipes and redirections
+A lot here too!!
+
+- Command history
+- Better prompts (show current directory)
+- tab completion
+- Better error handling
