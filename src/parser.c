@@ -1,5 +1,7 @@
 #include "parser.h"
+#include "expansion.h"
 #include "tokenizer.h"
+#include <stdio.h>
 #include <string.h>
 
 void parse_command(char *input, char **args) {
@@ -99,10 +101,10 @@ int split_tokens_pipe(struct token *tokens, int count, char **left_args,
     }
 
     if (found_pipe == 0) {
-      left_args[left_count] = tokens[i].value;
+      left_args[left_count] = expand_variable(tokens[i].value);
       left_count++;
     } else {
-      right_args[right_count] = tokens[i].value;
+      right_args[right_count] = expand_variable(tokens[i].value);
       right_count++;
     }
   }

@@ -94,7 +94,8 @@ static int handel_output_redirect(struct token *tokens, int count) {
 
   int append =
       tokens[redirect_index].type == TOKEN_REDIR_APPEND; // 0 -> '>', 1 -> '>>'
-  execute_redirect(args, tokens[redirect_index + 1].value, append);
+  execute_redirect(args, expand_variable(tokens[redirect_index + 1].value),
+                   append);
 
   return 1;
 }
