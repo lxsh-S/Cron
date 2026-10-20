@@ -30,6 +30,16 @@ I know this isn't the best implementation because suppose if I put something oth
 
 Because we have a `quote` variable that checks if we are inside a text or not the fix was easy. We simply check if we are still inside the quoted text when the input is passed, if we are we return `-1` and we don't execute the command then we print an unmatched quote error from "shell.c".
 
-### More
+## More
 
-- Environment variable expansion everywhere
+### Environment variable expansion everywhere
+
+We already had a basic environment expansion that was working with simple commands like `echo $HOME`. But in a real shell we use commands like these too `cat < $HOME/test.txt` which should print the contents in `test.txt` but cron doesnt do that because the old `expand_variable` was returning `HOME/test.txt` to the getenv() function because of which cat was ultimately returning an error that it couldnt find such directory
+
+So my current way to fix this is, we expand the environment variable by seperating the part after `/`. Or if we dont find `/` we will just use the default old way of expansion.
+
+```
+char *slash = strchr(word, '/');
+```
+
+We currently first check for a slash in the input then we seperate the value and the variable then we expand the variable, after this we add it up and it becomes `/home/lxsh/test.txt` which will be a valid input for the cat command!
