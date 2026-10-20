@@ -81,6 +81,7 @@ Currently cron only supports:
 - '>>' output redirection
 - '<' to read files using cat/Input
 - '|' pipes
+- Git commands [quotes support]
 
 A bunch of shell features are still being impemented :P
 
