@@ -5,7 +5,7 @@ I'm starting a journal to document my learnings and progress from `20/10/26 (dd/
 
 # 20/10/26
 
-Today I mostly fixed the errors that came with my current implementation of the tokenizer to tackle quotes in git commands. Operators such as `>, <, >>, |` are recognized as text by the tokenizer with was very needed to prevent errors
+Today I mostly fixed the errors that came with my current implementation of the tokenizer to tackle quotes in git commands. Operators such as `>, <, >>, |` are recognized as text by the tokenizer which was very needed to prevent errors
 
 I faced errors with:
 
@@ -29,3 +29,7 @@ I know this isn't the best implementation because suppose if I put something oth
   Here, as you see we we havent closed the string but `cron` still outputs `hello world` in the terminal while other shells support multiline input after you press enter.
 
 Because we have a `quote` variable that checks if we are inside a text or not the fix was easy. We simply check if we are still inside the quoted text when the input is passed, if we are we return `-1` and we don't execute the command then we print an unmatched quote error from "shell.c".
+
+### More
+
+- Environment variable expansion everywhere

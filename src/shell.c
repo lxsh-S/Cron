@@ -43,12 +43,13 @@ static int handel_input_redirect(struct token *tokens, int count) {
       return 1;
     }
 
-    args[argc++] = tokens[i].value;
+    args[argc++] = expand_variable(tokens[i].value);
   }
 
   args[argc] = NULL;
 
-  execute_input_redirect(args, tokens[redirect_index + 1].value);
+  execute_input_redirect(args,
+                         expand_variable(tokens[redirect_index + 1].value));
   return 1;
 }
 

@@ -87,4 +87,4 @@ A bunch of shell features are still being impemented :P
 
 ### CURRENTLY WORKING ON??
 
-Fix more edge cases that come with quotes
+environment variables to work with commands pipes and redirections
