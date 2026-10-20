@@ -1,7 +1,6 @@
 #include "parser.h"
 #include "expansion.h"
 #include "tokenizer.h"
-#include <stdio.h>
 #include <string.h>
 
 void parse_command(char *input, char **args) {

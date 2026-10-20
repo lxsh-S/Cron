@@ -44,6 +44,9 @@ char *slash = strchr(word, '/');
 
 We currently first check for a slash in the input then we seperate the value and the variable then we expand the variable, after this we add it up and it becomes `/home/lxsh/test.txt` which will be a valid input for the cat command!
 
+Also finnaly expanded it to used with pipes and I/O redirection operators in a single command!!
+We just didnt use the `expand_variable` function in output/input redirection handling functions :)
+
 ### Major C concepts I learnt today
 
 - memcpy(), We use this to copy a specific amount of bytes from one memory location to other one, but this doesnt put a null terminator at the end so have to manually add that which I did
