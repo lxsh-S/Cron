@@ -71,11 +71,25 @@ int tokenizer(char *input, struct token *tokens) {
           p++;
           continue;
         }
-      } else if (*p == quote) {
-        // End the quoted section
-        quote = '\0';
-        p++;
-        continue;
+      } else {
+        // Les handle escape characters in quotes
+        if (quote == '"' && *p == '\\' && (*p + 1) != '\0') {
+          p++;
+
+          if (length < (int)sizeof(tokens[count].value) - 1) {
+            tokens[count].value[length++] = *p;
+          }
+
+          p++;
+          continue;
+        }
+
+        // and we will end the section when we find its paired quote
+        if (*p == quote) {
+          quote = '\0';
+          p++;
+          continue;
+        }
       }
 
       // store the character and we ;eave room for '\0'
