@@ -5,6 +5,7 @@
 #include "builtins.h"
 #include "executor.h"
 #include "expansion.h"
+#include "history.h"
 #include "parser.h"
 #include "shell.h"
 #include "tokenizer.h"
@@ -129,11 +130,18 @@ void shell_run(void) {
 
     input[strcspn(input, "\n")] = '\0';
 
+    if (input[0] == '\0') {
+      continue;
+    }
+
+    history_add(input);
+
     if (strcmp(input, "exit") == 0) {
       break;
     }
 
-    if (input[0] == '\0') {
+    if (strcmp(input, "history") == 0) {
+      history_print();
       continue;
     }
 
