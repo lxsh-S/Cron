@@ -1,7 +1,9 @@
 #include "line_editor.h"
+#include "history.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <termios.h>
 #include <unistd.h>
 
@@ -53,6 +55,7 @@ static int read_escape_sequence(void) {
 char *read_line(const char *prompt) {
   static char buffer[1024];
   size_t length = 0;
+  int history_position = history_get_count();
   struct termios original;
 
   printf("%s", prompt);
@@ -77,9 +80,31 @@ char *read_line(const char *prompt) {
 
     if (c == 27) {
       int key = read_escape_sequence();
-      printf("\nArrow Key: %d\n", key);
-      printf("%s", prompt);
-      fflush(stdout);
+      const char *command = NULL;
+
+      if (key == 1 && history_position > 0) {
+        history_position++;
+        command = history_get(history_position);
+      } else if (key == 2 && history_position < history_get_count()) {
+        history_position++;
+
+        if (history_position < history_get_count()) {
+          command = history_get(history_position);
+        } else {
+          command = "";
+        }
+      }
+
+      if (command != NULL) {
+        printf("\r\033[k%s", prompt);
+
+        strcpy(buffer, command);
+        length = strlen(buffer);
+
+        printf("%s", buffer);
+        fflush(stdout);
+      }
+
       continue;
     }
 

@@ -23,3 +23,13 @@ void history_print(void) {
     printf("%d %s\n", i + 1, commands[i]);
   }
 }
+
+const char *history_get(int index) {
+  if (index < 0 || index >= command_count) {
+    return NULL;
+  }
+
+  return commands[index];
+}
+
+int history_get_count(void) { return command_count; }
