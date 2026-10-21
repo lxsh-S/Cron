@@ -11,7 +11,7 @@ OBJ = build/main.o \
 			build/builtins.o \
 			build/expansion.o \
 			build/history.o \
-			build/line_editor.o
+			build/line_editor.o \
 			build/prompt.o
 
 $(TARGET): $(OBJ)
