@@ -10,7 +10,8 @@ OBJ = build/main.o \
 			build/tokenizer.o \
 			build/builtins.o \
 			build/expansion.o \
-			build/history.o
+			build/history.o \
+			build/line_editor.o
 
 $(TARGET): $(OBJ)
 	$(CC) $(OBJ) -o $(TARGET)
@@ -18,7 +19,7 @@ $(TARGET): $(OBJ)
 build/main.o: src/main.c src/shell.h
 	$(CC) $(CFLAGS) -c src/main.c -o build/main.o
 
-build/shell.o: src/shell.c src/shell.h src/parser.h src/executor.h
+build/shell.o: src/shell.c src/shell.h src/parser.h src/executor.h src/line_editor.h
 	$(CC) $(CFLAGS) -c src/shell.c -o build/shell.o
 
 build/parser.o: src/parser.c src/parser.h
@@ -38,6 +39,9 @@ build/expansion.o: src/expansion.c src/expansion.h
 
 build/history.o: src/history.c src/history.h
 	$(CC) $(CFLAGS) -c src/history.c -o build/history.o
+
+build/line_editor.o: src/line_editor.c src/line_editor.h src/history.h
+	$(CC) $(CFLAGS) -c src/line_editor.c -o build/line_editor.o
 
 clean:
 	rm -rf build/*.o build/cron
