@@ -8,6 +8,7 @@
 #include "history.h"
 #include "line_editor.h"
 #include "parser.h"
+#include "prompt.h"
 #include "shell.h"
 #include "tokenizer.h"
 #include "unistd.h"
@@ -125,7 +126,7 @@ void shell_run(void) {
   char input[1024];
 
   while (1) {
-    char *input = read_line("λ ");
+    char *input = read_line(prompt_get());
 
     if (input == NULL) {
       break;
