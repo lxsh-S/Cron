@@ -15,7 +15,7 @@ static int enable_raw_mode(struct termios *original) {
   }
 
   raw = *original;
-  raw.c_lflag &= ~(ICANON | ECHO);
+  raw.c_lflag &= ~(ICANON | ECHO | ISIG);
 
   if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) {
     return -1;
@@ -72,6 +72,24 @@ char *read_line(const char *prompt) {
     if (bytes_read <= 0) {
       disable_raw_mode(&original);
       return NULL;
+    }
+
+    // if ctrl c we cancel the curent input
+    if (c == 3) { // BYTE VALUE FOR CTRL C
+      buffer[0] = '\0';
+      disable_raw_mode(&original);
+      printf("^C\n");
+      return buffer;
+    }
+
+    // ctrl o end input i line is empty
+    if (c == 4) { // byte value for ctrl d
+      if (length == 0) {
+        disable_raw_mode(&original);
+        return NULL;
+      }
+
+      break;
     }
 
     if (c == '\n' || c == '\r') {
