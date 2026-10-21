@@ -1,4 +1,6 @@
+#include <ctype.h>
 #include <dirent.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 
@@ -59,7 +61,7 @@ size_t completion_handle(char *buffer, size_t length, size_t capacity,
     size_t directory_length = (size_t)(slash - token);
     size_t prefix_length = directory_length + 1;
 
-    if (predix_length >= sizeof(path_prefix) ||
+    if (prefix_length >= sizeof(path_prefix) ||
         directory_length >= sizeof(directory)) {
       return length;
     }
@@ -72,7 +74,7 @@ size_t completion_handle(char *buffer, size_t length, size_t capacity,
     if (directory_length == 0) {
       strcpy(directory, "/");
     } else {
-      memcpy(directory, token, directory_lenght);
+      memcpy(directory, token, directory_length);
       directory[directory_length] = '\0';
     }
   }
@@ -90,7 +92,7 @@ size_t completion_handle(char *buffer, size_t length, size_t capacity,
 
   while ((entry = readdir(dir)) != NULL) {
     // we hide dotfiles unless the user types a dot
-    if (entry->d_name[0] == '.' && name_prefix != '.') {
+    if (entry->d_name[0] == '.' && name_prefix[0] != '.') {
       continue;
     }
 
@@ -119,6 +121,55 @@ size_t completion_handle(char *buffer, size_t length, size_t capacity,
   closedir(dir);
 
   if (match_count == 0) {
+    return length;
+  }
+
+  // if we find one match, we complete it and add a slash or a space
+  if (match_count == 1) {
+    size_t completed_length = strlen(matches[0]);
+    char suffix = is_directory(matches[0]) ? '/' : ' ';
+
+    if (completed_length + 1 >= capacity - word_start) {
+      return length;
+    }
+
+    memcpy(buffer + word_start, matches[0], completed_length);
+    buffer[word_start + completed_length] = suffix;
+    buffer[word_start + completed_length + 1] = '\0';
+    return word_start + completed_length + 1;
+  }
+
+  // and if we get multiple matches, we find the longest common prefix
+  if (!too_many) {
+    size_t common_length = strlen(matches[0]);
+
+    for (size_t i = 1; i < match_count; i++) {
+      while (common_length > 0 &&
+             strncmp(matches[0], matches[i], common_length) != 0) {
+        common_length--;
+      }
+    }
+
+    if (common_length > token_length && common_length < capacity - word_start) {
+      memcpy(buffer + word_start, matches[0], common_length);
+      buffer[word_start + common_length] = '\0';
+      return word_start + common_length;
+    }
+
+    // oh yea what if we dont find a proper completion?, we display the avaible
+    // matches
+    printf("\n");
+
+    for (size_t i = 0; i < match_count; i++) {
+      printf("%s%s ", matches[i], is_directory(matches[i]) ? "/" : "");
+    }
+
+    if (too_many) {
+      printf("...");
+    }
+
+    printf("\n");
+    redraw_line(prompt, buffer);
     return length;
   }
 }
