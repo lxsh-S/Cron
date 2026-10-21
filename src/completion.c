@@ -155,21 +155,21 @@ size_t completion_handle(char *buffer, size_t length, size_t capacity,
       buffer[word_start + common_length] = '\0';
       return word_start + common_length;
     }
-
-    // oh yea what if we dont find a proper completion?, we display the avaible
-    // matches
-    printf("\n");
-
-    for (size_t i = 0; i < match_count; i++) {
-      printf("%s%s ", matches[i], is_directory(matches[i]) ? "/" : "");
-    }
-
-    if (too_many) {
-      printf("...");
-    }
-
-    printf("\n");
-    redraw_line(prompt, buffer);
-    return length;
   }
+  // oh yea what if we dont find a proper completion?, we display the avaible
+  // matches
+  printf("\n");
+
+  for (size_t i = 0; i < match_count; i++) {
+    printf("%s%s ", matches[i], is_directory(matches[i]) ? "/" : "");
+  }
+
+  if (too_many) {
+    printf("...");
+  }
+
+  printf("\n");
+  redraw_line(prompt, buffer);
+
+  return length;
 }

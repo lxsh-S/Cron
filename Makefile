@@ -12,7 +12,8 @@ OBJ = build/main.o \
 			build/expansion.o \
 			build/history.o \
 			build/line_editor.o \
-			build/prompt.o
+			build/prompt.o \
+			build/completion.o
 
 $(TARGET): $(OBJ)
 	$(CC) $(OBJ) -o $(TARGET)
@@ -41,11 +42,14 @@ build/expansion.o: src/expansion.c src/expansion.h
 build/history.o: src/history.c src/history.h
 	$(CC) $(CFLAGS) -c src/history.c -o build/history.o
 
-build/line_editor.o: src/line_editor.c src/line_editor.h src/history.h
+build/line_editor.o: src/line_editor.c src/line_editor.h src/history.h src/completion.h
 	$(CC) $(CFLAGS) -c src/line_editor.c -o build/line_editor.o
 
 build/prompt.o: src/prompt.c src/prompt.h
 	$(CC) $(CFLAGS) -c src/prompt.c -o build/prompt.o
+
+build/completion.o: src/completion.c src/completion.h
+	$(CC) $(CFLAGS) -c src/completion.c -o build/completion.o
 
 clean:
 	rm -rf build/*.o build/cron
