@@ -123,8 +123,6 @@ static void tokens_to_args(struct token *tokens, int count, char **args) {
 void shell_run(void) {
   history_init();
 
-  char input[1024];
-
   while (1) {
     char *input = read_line(prompt_get());
 
