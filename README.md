@@ -90,7 +90,9 @@ A bunch of shell features are still being impemented :P
 
 A lot here too!!
 
-- Command history
+- Command history -> done
 - Better prompts (show current directory)
 - tab completion
 - Better error handling
+
+All of the new thing will be coming on release `0.4`
