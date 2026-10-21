@@ -81,8 +81,6 @@ Currently cron only supports:
 - '>>' output redirection
 - '<' to read files using cat/Input
 - '|' pipes
-- Git commands [quotes support]
-- use environment variables with pipes and I/O redirections
 
 A bunch of shell features are still being impemented :P
 
@@ -90,10 +88,13 @@ A bunch of shell features are still being impemented :P
 
 A lot here too!!
 
+- Git commands [quotes support] -> done
+- use environment variables with pipes and I/O redirections -> done
 - Command history -> done
 - Persistent command history -> done
 - Better prompts (show current directory) -> done
 - tab completion -> working here!
 - Better error handling
 
-All of the new thing will be coming on release `0.4`
+Current version: `0.3`
+All of the new things will be coming on release `0.4`
