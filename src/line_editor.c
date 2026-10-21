@@ -1,4 +1,5 @@
 #include "line_editor.h"
+#include "completion.h"
 #include "history.h"
 
 #include <stdio.h>
@@ -94,6 +95,15 @@ char *read_line(const char *prompt) {
 
     if (c == '\n' || c == '\r') {
       break;
+    }
+
+    if (c == '\t') {
+      length = completion_handle(buffer, length, sizeof(buffer), prompt);
+
+      printf("\r\033[K%s%s", prompt, buffer);
+      fflush(stdout);
+
+      continue;
     }
 
     if (c == 27) {
