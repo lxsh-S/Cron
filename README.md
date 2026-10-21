@@ -92,8 +92,8 @@ A lot here too!!
 
 - Command history -> done
 - Persistent command history -> done
-- Better prompts (show current directory)
-- tab completion
+- Better prompts (show current directory) -> done
+- tab completion -> working here!
 - Better error handling
 
 All of the new thing will be coming on release `0.4`
