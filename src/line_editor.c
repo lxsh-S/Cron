@@ -15,7 +15,7 @@ static int enable_raw_mode(struct termios *original) {
   }
 
   raw = *original;
-  raw.c_lflag &= -(ICANON | ECHO);
+  raw.c_lflag &= ~(ICANON | ECHO);
 
   if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) {
     return -1;
@@ -83,7 +83,7 @@ char *read_line(const char *prompt) {
       const char *command = NULL;
 
       if (key == 1 && history_position > 0) {
-        history_position++;
+        history_position--;
         command = history_get(history_position);
       } else if (key == 2 && history_position < history_get_count()) {
         history_position++;
@@ -96,7 +96,7 @@ char *read_line(const char *prompt) {
       }
 
       if (command != NULL) {
-        printf("\r\033[k%s", prompt);
+        printf("\r\033[K%s", prompt);
 
         strcpy(buffer, command);
         length = strlen(buffer);
@@ -110,7 +110,7 @@ char *read_line(const char *prompt) {
 
     if (c == 127 || c == '\b') {
       if (length > 0) {
-        length++;
+        length--;
         printf("\b \b");
         fflush(stdout);
       }
