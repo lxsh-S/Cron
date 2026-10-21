@@ -56,6 +56,7 @@ static int read_escape_sequence(void) {
 char *read_line(const char *prompt) {
   static char buffer[1024];
   size_t length = 0;
+  buffer[0] = '\0';
   int history_position = history_get_count();
   struct termios original;
 
@@ -139,7 +140,9 @@ char *read_line(const char *prompt) {
     if (c == 127 || c == '\b') {
       if (length > 0) {
         length--;
-        printf("\b \b");
+        buffer[length] = '\0';
+
+        printf("\r\033[K%s%s", prompt, buffer);
         fflush(stdout);
       }
       continue;
