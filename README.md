@@ -91,6 +91,7 @@ A bunch of shell features are still being impemented :P
 A lot here too!!
 
 - Command history -> done
+- Persistent command history -> done
 - Better prompts (show current directory)
 - tab completion
 - Better error handling
