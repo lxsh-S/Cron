@@ -1,8 +1,12 @@
 #include <ctype.h>
 #include <dirent.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
+
+#include "completion.h"
 
 #define PATH_SIZE 4096
 #define TOKEN_SIZE 1024
@@ -25,6 +29,115 @@ static int is_directory(const char *path) {
 static void redraw_line(const char *prompt, const char *buffer) {
   printf("\r\033[K%s%s", prompt, buffer);
   fflush(stdout);
+}
+
+static int is_command_position(const char *buffer, size_t word_start) {
+  for (size_t i = 0; i < word_start; i++) {
+    if (!isspace((unsigned char)buffer[i])) {
+      return 0;
+    }
+  }
+
+  return 1;
+}
+
+static int is_executable(const char *directory, const char *name) {
+  char path[PATH_SIZE];
+  // struct stat info;
+
+  int written = snprintf(path, sizeof(path), "%s/%s", directory, name);
+
+  if (written < 0 || (size_t)written >= sizeof(path)) {
+    return 0;
+  }
+
+  return access(path, X_OK) == 0;
+}
+
+static void add_match(char matches[MAX_MATCHES][TOKEN_SIZE],
+                      size_t *match_count, int *too_many, const char *name) {
+  for (size_t i = 0; i < *match_count; i++) {
+    if (strcmp(matches[i], name) == 0) {
+      return;
+    }
+  }
+
+  if (*match_count >= MAX_MATCHES) {
+    *too_many = 1;
+    return;
+  }
+
+  if (strlen(name) >= TOKEN_SIZE) {
+    return;
+  }
+
+  strcpy(matches[*match_count], name);
+  (*match_count)++;
+}
+
+static void collect_path_matches(const char *prefix,
+                                 char matches[MAX_MATCHES][TOKEN_SIZE],
+                                 size_t *match_count, int *too_many) {
+  const char *path = getenv("PATH");
+
+  if (path == NULL) {
+    return;
+  }
+
+  const char *part = path;
+
+  while (1) {
+    const char *colon = strchr(part, ':');
+    size_t dir_length = colon ? (size_t)(colon - part) : strlen(part);
+
+    char directory[PATH_SIZE];
+
+    if (dir_length == 0) {
+      strcpy(directory, ".");
+    } else if (dir_length >= sizeof(directory)) {
+      if (colon == NULL) {
+        break;
+      }
+
+      part = colon + 1;
+      continue;
+    } else {
+      memcpy(directory, part, dir_length);
+      directory[dir_length] = '\0';
+    }
+
+    DIR *dir = opendir(directory);
+
+    if (dir != NULL) {
+      struct dirent *entry;
+
+      while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_name[0] == '.' && prefix[0] != '.') {
+          continue;
+        }
+
+        if (!starts_with(entry->d_name, prefix)) {
+          continue;
+        }
+
+        if (is_executable(directory, entry->d_name)) {
+          add_match(matches, match_count, too_many, entry->d_name);
+        }
+
+        if (*too_many) {
+          break;
+        }
+      }
+
+      closedir(dir);
+    }
+
+    if (*too_many || colon == NULL) {
+      break;
+    }
+
+    part = colon + 1;
+  }
 }
 
 size_t completion_handle(char *buffer, size_t length, size_t capacity,
@@ -79,46 +192,50 @@ size_t completion_handle(char *buffer, size_t length, size_t capacity,
     }
   }
 
-  DIR *dir = opendir(directory);
-
-  if (dir == NULL) {
-    return length;
-  }
-
   char matches[MAX_MATCHES][TOKEN_SIZE];
   size_t match_count = 0;
   int too_many = 0;
-  struct dirent *entry;
 
-  while ((entry = readdir(dir)) != NULL) {
-    // we hide dotfiles unless the user types a dot
-    if (entry->d_name[0] == '.' && name_prefix[0] != '.') {
-      continue;
+  int completing_command =
+      slash == NULL && is_command_position(buffer, word_start);
+
+  if (completing_command) {
+    collect_path_matches(name_prefix, matches, &match_count, &too_many);
+  } else {
+    DIR *dir = opendir(directory);
+
+    if (dir == NULL) {
+      return length;
     }
 
-    if (!starts_with(entry->d_name, name_prefix)) {
-      continue;
+    struct dirent *entry;
+
+    while ((entry = readdir(dir)) != NULL) {
+      if (entry->d_name[0] == '.' && name_prefix[0] != '.') {
+        continue;
+      }
+
+      size_t prefix_length = strlen(path_prefix);
+      size_t name_length = strlen(entry->d_name);
+
+      if (prefix_length + name_length >= TOKEN_SIZE) {
+        continue;
+      }
+
+      if (match_count == MAX_MATCHES) {
+        too_many = 1;
+        break;
+      }
+
+      memcpy(matches[match_count], path_prefix, prefix_length);
+      memcpy(matches[match_count] + prefix_length, entry->d_name,
+             name_length + 1);
+
+      match_count++;
     }
 
-    size_t prefix_length = strlen(path_prefix);
-    size_t name_length = strlen(entry->d_name);
-
-    if (prefix_length + name_length >= TOKEN_SIZE) {
-      continue;
-    }
-
-    if (match_count == MAX_MATCHES) {
-      too_many = 1;
-      break;
-    }
-
-    memcpy(matches[match_count], path_prefix, prefix_length);
-    memcpy(matches[match_count] + prefix_length, entry->d_name,
-           name_length + 1);
-    match_count++;
+    closedir(dir);
   }
-
-  closedir(dir);
 
   if (match_count == 0) {
     return length;
@@ -127,7 +244,7 @@ size_t completion_handle(char *buffer, size_t length, size_t capacity,
   // if we find one match, we complete it and add a slash or a space
   if (match_count == 1) {
     size_t completed_length = strlen(matches[0]);
-    char suffix = is_directory(matches[0]) ? '/' : ' ';
+    char suffix = (!completing_command && is_directory(matches[0])) ? '/' : ' ';
 
     if (completed_length + 1 >= capacity - word_start) {
       return length;
