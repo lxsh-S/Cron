@@ -93,8 +93,8 @@ A lot here too!!
 - Command history -> done
 - Persistent command history -> done
 - Better prompts (show current directory) -> done
-- tab completion -> working here!
-- Better error handling
+- tab completion -> done
+- Better error handling -> working here!
 
 Current version: `0.3`
 All of the new things will be coming on release `0.4`
