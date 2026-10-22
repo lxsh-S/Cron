@@ -1,5 +1,6 @@
 #include "executor.h"
 
+#include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,14 +11,32 @@
 void execute_command(char **args) {
   pid_t pid = fork();
 
+  if (pid == -1) {
+    perror("Cron: fork");
+    return;
+  }
+
   if (pid == 0) {
     execvp(args[0], args);
 
-    perror(args[0]); // Idk why it always prints file error
-    exit(1);
+    // we come here when exec fails
+    int error = errno;
+
+    if (error == ENOENT) {
+      fprintf(stderr, "Cron: command not found '%s'\n", args[0]);
+      _exit(127);
+    }
+
+    errno = error;
+    perror(args[0]);
+    _exit(126);
   }
 
-  waitpid(pid, NULL, 0);
+  int status;
+
+  if (waitpid(pid, &status, 0) == -1) {
+    perror("Cron: waitpid");
+  }
 }
 
 // CURRENTLY UNSED
