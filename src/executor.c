@@ -44,45 +44,92 @@ void execute_command(char **args) {
 void execute_pipeline(char **left_args, char **right_args) {
   int pipefd[2];
 
-  pipe(pipefd);
+  if (pipe(pipefd) == -1) {
+    perror("Cron: pipe");
+    return;
+  }
 
   pid_t left_pid = fork();
 
+  if (left_pid == -1) {
+    perror("Cron: fork");
+    close(pipefd[0]);
+    close(pipefd[1]);
+    return;
+  }
   if (left_pid == 0) {
     close(pipefd[0]);
 
-    dup2(pipefd[1], STDOUT_FILENO);
+    if (dup2(pipefd[1], STDOUT_FILENO) == -1) {
+      perror("Cron: dup2");
+      _exit(126);
+    }
 
     close(pipefd[1]);
 
     execvp(left_args[0], left_args);
 
-    // We knoW that this will only run if the 'exec' fails
-    perror(left_args[0]);
-    exit(1);
+    int error = errno;
+
+    if (error == ENOENT) {
+      fprintf(stderr, "Cron: command not fount-> %s\n", left_args[0]);
+    } else {
+      errno = error;
+      perror(left_args[0]);
+    }
+
+    _exit(error == ENOENT ? 127 : 126);
   }
 
   pid_t right_pid = fork();
 
+  if (right_pid == -1) {
+    perror("Cron: fork");
+
+    close(pipefd[0]);
+    close(pipefd[1]);
+
+    if (waitpid(left_pid, NULL, 0) == -1) {
+      perror("Cron: waitpid");
+    }
+
+    return;
+  }
+
   if (right_pid == 0) {
     close(pipefd[1]);
 
-    dup2(pipefd[0], STDIN_FILENO);
+    if (dup2(pipefd[0], STDIN_FILENO) == -1) {
+      perror("Cron: dup2");
+      _exit(126);
+    }
 
     close(pipefd[0]);
 
     execvp(right_args[0], right_args);
 
-    perror(right_args[0]);
-    exit(1);
+    int error = errno;
+
+    if (error == ENOENT) {
+      fprintf(stderr, "Cron: command not found-> %s\n", right_args[0]);
+    } else {
+      errno = error;
+      perror(right_args[0]);
+    }
+
+    _exit(error == ENOENT ? 127 : 126);
   }
 
-  // Cron is the parent of these two childs above (!!!Wow!!!)
   close(pipefd[0]);
   close(pipefd[1]);
 
-  waitpid(left_pid, NULL, 0);
-  waitpid(right_pid, NULL, 0);
+  if (waitpid(left_pid, NULL, 0) == -1) {
+    perror("Cron: waitpid");
+  }
+
+  if (waitpid(right_pid, NULL, 0) == -1) {
+    perror("Cron: waitpid");
+  }
 }
 
 // Execute rediret to file
