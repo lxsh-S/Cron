@@ -32,7 +32,17 @@ static void redraw_line(const char *prompt, const char *buffer) {
 }
 
 static int is_command_position(const char *buffer, size_t word_start) {
+  size_t command_start = 0;
+
+  // find the beginning of the current command
   for (size_t i = 0; i < word_start; i++) {
+    if (buffer[i] == '|') {
+      command_start = i + 1;
+    }
+  }
+
+  // is ther a word before the current one?
+  for (size_t i = command_start; i < word_start; i++) {
     if (!isspace((unsigned char)buffer[i])) {
       return 0;
     }
@@ -43,11 +53,15 @@ static int is_command_position(const char *buffer, size_t word_start) {
 
 static int is_executable(const char *directory, const char *name) {
   char path[PATH_SIZE];
-  // struct stat info;
+  struct stat info;
 
   int written = snprintf(path, sizeof(path), "%s/%s", directory, name);
 
   if (written < 0 || (size_t)written >= sizeof(path)) {
+    return 0;
+  }
+
+  if (stat(path, &info) == -1 || !S_ISREG(info.st_mode)) {
     return 0;
   }
 
@@ -212,6 +226,11 @@ size_t completion_handle(char *buffer, size_t length, size_t capacity,
 
     while ((entry = readdir(dir)) != NULL) {
       if (entry->d_name[0] == '.' && name_prefix[0] != '.') {
+        continue;
+      }
+
+      // skip entries that dont match what we typed
+      if (!starts_with(entry->d_name, name_prefix)) {
         continue;
       }
 
