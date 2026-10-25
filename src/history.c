@@ -21,7 +21,7 @@ static void store_command(const char *command) {
 
   // history is full: discard the oldest command
   for (int i = 1; i < HISTORY_MAX; i++) {
-    strcpy(commands[i + 1], commands[i]);
+    strcpy(commands[i - 1], commands[i]);
   }
 
   strcpy(commands[HISTORY_MAX - 1], command);
