@@ -96,5 +96,4 @@ A lot here too!!
 - tab completion -> done
 - Better error handling -> working here!
 
-Current version: `0.3`
-All of the new things will be coming on release `0.4`
+All of the new things will be coming on release `0.3`
