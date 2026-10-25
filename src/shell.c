@@ -1,12 +1,14 @@
 #include <fcntl.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "builtins.h"
 #include "executor.h"
 #include "expansion.h"
+#include "history.h"
+#include "line_editor.h"
 #include "parser.h"
+#include "prompt.h"
 #include "shell.h"
 #include "tokenizer.h"
 #include "unistd.h"
@@ -44,12 +46,13 @@ static int handel_input_redirect(struct token *tokens, int count) {
       return 1;
     }
 
-    args[argc++] = tokens[i].value;
+    args[argc++] = expand_variable(tokens[i].value);
   }
 
   args[argc] = NULL;
 
-  execute_input_redirect(args, tokens[redirect_index + 1].value);
+  execute_input_redirect(args,
+                         expand_variable(tokens[redirect_index + 1].value));
   return 1;
 }
 
@@ -94,7 +97,8 @@ static int handel_output_redirect(struct token *tokens, int count) {
 
   int append =
       tokens[redirect_index].type == TOKEN_REDIR_APPEND; // 0 -> '>', 1 -> '>>'
-  execute_redirect(args, tokens[redirect_index + 1].value, append);
+  execute_redirect(args, expand_variable(tokens[redirect_index + 1].value),
+                   append);
 
   return 1;
 }
@@ -117,18 +121,12 @@ static void tokens_to_args(struct token *tokens, int count, char **args) {
 
 // Run the shell
 void shell_run(void) {
-  char input[1024];
+  history_init();
 
   while (1) {
-    printf("λ ");
+    char *input = read_line(prompt_get());
 
-    if (fgets(input, sizeof(input), stdin) == NULL) {
-      break;
-    }
-
-    input[strcspn(input, "\n")] = '\0';
-
-    if (strcmp(input, "exit") == 0) {
+    if (input == NULL) {
       break;
     }
 
@@ -136,9 +134,24 @@ void shell_run(void) {
       continue;
     }
 
+    history_add(input);
+
+    if (strcmp(input, "exit") == 0) {
+      break;
+    }
+
+    if (strcmp(input, "history") == 0) {
+      history_print();
+      continue;
+    }
+
     struct token tokens[64];
 
     int count = tokenizer(input, tokens);
+
+    if (count < 0) {
+      continue; // we stop executing a return to prompting
+    }
 
     int has_pipe = 0;
 

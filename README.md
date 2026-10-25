@@ -86,4 +86,15 @@ A bunch of shell features are still being impemented :P
 
 ### CURRENTLY WORKING ON??
 
-- Make git commands work in brach `feature/git-support` with other things! until review is done:)
+A lot here too!!
+
+- Git commands [quotes support] -> done
+- use environment variables with pipes and I/O redirections -> done
+- Command history -> done
+- Persistent command history -> done
+- Better prompts (show current directory) -> done
+- tab completion -> done
+- Better error handling -> working here!
+
+Current version: `0.3`
+All of the new things will be coming on release `0.4`

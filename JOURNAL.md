@@ -1,0 +1,53 @@
+# JOURNAL
+
+I'm starting a journal to document my learnings and progress from `20/10/26 (dd/mm/yy)` :)
+(I was building before this but didnt journal :( )
+
+# 20/10/26
+
+Today I mostly fixed the errors that came with my current implementation of the tokenizer to tackle quotes in git commands. Operators such as `>, <, >>, |` are recognized as text by the tokenizer which was very needed to prevent errors
+
+I faced errors with:
+
+```
+echo "hello \"LAKSH\"" - no escaped quotes support
+echo "hello world - unmatched quotes
+```
+
+## Details
+
+### Escape handling
+
+- example -> `echo "hello \"LAKSH\""`
+  before, `corn` used to treat any quote as the end of the text, but today I have changed the else statement to recognize `\` and so the next character after it to be treated as a litereal text.
+
+I know this isn't the best implementation because suppose if I put something other than quote `cron` will still treat it as text. But I didnt account for that edge cause only because I have never needed to use an Operator with backslash and I think this shouldnt cause any problems.
+
+### Mismatched quotes
+
+- example -> `echo "hello world`
+  Here, as you see we we havent closed the string but `cron` still outputs `hello world` in the terminal while other shells support multiline input after you press enter.
+
+Because we have a `quote` variable that checks if we are inside a text or not the fix was easy. We simply check if we are still inside the quoted text when the input is passed, if we are we return `-1` and we don't execute the command then we print an unmatched quote error from "shell.c".
+
+## More
+
+### Environment variable expansion everywhere
+
+We already had a basic environment expansion that was working with simple commands like `echo $HOME`. But in a real shell we use commands like these too `cat < $HOME/test.txt` which should print the contents in `test.txt` but cron doesnt do that because the old `expand_variable` was returning `HOME/test.txt` to the getenv() function because of which cat was ultimately returning an error that it couldnt find such directory
+
+So my current way to fix this is, we expand the environment variable by seperating the part after `/`. Or if we dont find `/` we will just use the default old way of expansion.
+
+```
+char *slash = strchr(word, '/');
+```
+
+We currently first check for a slash in the input then we seperate the value and the variable then we expand the variable, after this we add it up and it becomes `/home/lxsh/test.txt` which will be a valid input for the cat command!
+
+Also finnaly expanded it to used with pipes and I/O redirection operators in a single command!!
+We just didnt use the `expand_variable` function in output/input redirection handling functions :)
+
+### Major C concepts I learnt today
+
+- memcpy(), We use this to copy a specific amount of bytes from one memory location to other one, but this doesnt put a null terminator at the end so have to manually add that which I did
+- malloc(), We allocate memory ourself, i didnt knew the the size of the resulting string before hand and as we only use 64 bytes for most part but because ill be changing that this became useful for me. Also we need to free() this after using as I saw in the video
