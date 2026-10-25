@@ -15,6 +15,11 @@ OBJ = build/main.o \
 			build/prompt.o \
 			build/completion.o
 
+build:
+	mkdir -p build
+
+$(OBJ): | build
+
 $(TARGET): $(OBJ)
 	$(CC) $(OBJ) -o $(TARGET)
 
