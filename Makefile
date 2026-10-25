@@ -2,6 +2,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra
 
 TARGET = build/cron
+.DEFAULT_GOAL := $(TARGET)
 
 OBJ = build/main.o \
 			build/shell.o \
